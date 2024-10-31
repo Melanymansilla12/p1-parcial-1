@@ -1,4 +1,6 @@
 class Disco {
+    static #idsExistentes = [];
+
     constructor(nombre, autor, portada, id) {
         this.nombre = nombre;
         this.autor = autor;
@@ -17,7 +19,7 @@ class Disco {
     }
 
     static pedirCodigo() {
-        return this.#validarId('Por favor, ingrese el ID numérico del disco');
+        return this.#validarId(); 
     }
 
     static pedirPortada() {
@@ -35,7 +37,7 @@ class Disco {
                 alert('Operación cancelada. Intente nuevamente.');
                 esValido = false;
             } else if (entrada.trim() === "") {
-                alert(' Ingrese texto, no se puede dejar el campo vacío');
+                alert('Ingrese texto, no se puede dejar el campo vacío');
                 esValido = false;
             } else {
                 esValido = true;
@@ -48,24 +50,28 @@ class Disco {
     static #validarId() {
         let entrada;
         let esValido = false;
-
+    
         do {
             entrada = parseInt(prompt('Ingrese el ID numérico único del disco'));
-
-            if (entrada < 1) {
+    
+            if (isNaN(entrada)) {
+                alert('Por favor, ingrese un número válido.');
+            } else if (entrada < 1) {
                 alert('El ID debe ser mayor o igual a 1.');
-                esValido = false;
             } else if (entrada > 999) {
                 alert('El ID no puede ser mayor que 999.');
-                esValido = false;
-            } else if (isNaN(entrada)) {
-                alert('Por favor, ingrese un número válido.');
-                esValido = false;
             } else {
-                esValido = true;
+               
+                const idExistente = this.#idsExistentes.includes(entrada);
+                if (idExistente) {
+                    alert('Este ID ya existe. Por favor, ingrese un ID único.');
+                } else {
+                    this.#idsExistentes.push(entrada); 
+                    esValido = true;
+                }
             }
         } while (!esValido);
-
+    
         return entrada;
     }
 
@@ -79,7 +85,6 @@ class Disco {
             let nuevaPista = new Pista(nombrePista, duracionPista);
             this.listaPistas.push(nuevaPista);
             this.cantidadPistas++;
-
         } while (confirm('¿Desea añadir otra pista?'));
     }
 
@@ -89,17 +94,16 @@ class Disco {
         contenidoHTML += `<div class="discos">`;
         contenidoHTML += `<h3>${this.nombre}</h3>`;
         contenidoHTML += `<h4>${this.autor}</h4>`;
-        contenidoHTML +=`<div class="informacionDiscos">`
+        contenidoHTML += `<div class="informacionDiscos">`;
         contenidoHTML += `<div id="img"><img src="${this.portada}"></div>`;
-        contenidoHTML += `<p>Codigo disco: ${this.id}</p>`;
+        contenidoHTML += `<p>Código disco: ${this.id}</p>`;
         contenidoHTML += `<p>Cantidad de pistas: ${this.cantidadPistas}</p>`;
-        contenidoHTML += `</div>`
+        contenidoHTML += `</div>`;
 
         contenidoHTML += `<div class="totalPistas">`;
         contenidoHTML += `<h5>Pistas</h5>`;
         
         contenidoHTML += `<ul>`;
-
 
         for (let pista of this.listaPistas) {
             const duracionFormateada = Pista.convertirSegundos(pista.duracion);

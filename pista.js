@@ -2,7 +2,7 @@ class Pista {
 
     constructor(nombre, duracion) {
         this.nombre = nombre;
-        this.duracion = duracion; // en segundos
+        this.duracion = duracion;
     }
 
     static solicitarNombrePista() {
@@ -38,23 +38,35 @@ class Pista {
     static #validarDuracion(mensaje = "") {
         let entrada;
         let esValido = false;
-
+    
         do {
-            entrada = parseInt(prompt(mensaje));
-
-            if (entrada < 0) {
-                alert('La duración debe ser mayor o igual a 0 segundos');
+            entrada = prompt(mensaje);
+    
+            if (isNaN(entrada)) {
+                alert('Solo se permiten números. Inténtelo de nuevo.');
                 esValido = false;
-            } else if (entrada >= 7200) {
-                alert('La duración no puede exceder los 7200 segundos');
-                esValido = false;
-            } else {
-                esValido = true;
             }
+            
+            else if (entrada.trim() === "") {
+                alert(' Ingrese números, no se puede dejar el campo vacío');
+                esValido = false;}
 
+            else {
+                entrada = parseInt(entrada);
+                if (entrada < 0) {
+                    alert('La duración debe ser mayor o igual a 0 segundos');
+                    esValido = false;
+                } else if (entrada >= 7200) {
+                    alert('La duración no puede exceder los 7200 segundos');
+                    esValido = false;
+                } else {
+                    esValido = true;
+                }
+            }
+            
         } while (!esValido);
-
-        return entrada;
+    
+    return entrada;
     }
 
     static convertirSegundos(segundos) {
